@@ -77,7 +77,7 @@ def loser_move(loser):
     p_dir[loser] = d % 4
     p_loc[loser] = (nr,nc)
     if len(v[nr][nc]) != 0:
-        get_gun(m, v[nr][nc])
+        get_gun(loser, v[nr][nc])
 
 
 for k in range(K):
