@@ -26,6 +26,7 @@ for i in range(1,M+1):
     s[i] = tuple(map(int, input().split()))
 time = 0
 arrive = set()
+found_basement = set()
 
 def bfs(i,j,m):
     q = deque()
@@ -84,27 +85,6 @@ def move(m):
     return best_move
 
 
-'''
-def move(m):
-    pr,pc = p[m]
-    sr,sc = s[m]
-    min_dist = 50
-    min_r = pr
-    min_c = pc
-    for dy,dx in [(-1,0),(0,-1),(0,1),(1,0)]:
-        nr = pr+dy
-        nc = pc+dx
-        if (nr,nc) == (sr,sc):
-            p[m] = (nr,nc)
-            return
-        if nr>N or nr<1 or nc>N or nc<1 or arr[nr][nc] != 0:
-            continue
-        if abs(nr-sr)+abs(nc-sc) < min_dist:
-            min_dist = abs(nr-sr)+abs(nc-sc)
-            min_r = nr
-            min_c = nc
-    p[m] = (min_r,min_c)
-'''
 
 def find_basecamp(m):
     min_dist=100
@@ -113,6 +93,8 @@ def find_basecamp(m):
     for i in range(1,N+1):
         for j in range(1,N+1):
             if arr[i][j] != 1:
+                continue
+            if arr[i][j] == -1:
                 continue
             bfs_dist = bfs(i,j,m)
             if bfs_dist  < min_dist or (bfs_dist  == min_dist and i<min_r) or \
@@ -136,28 +118,26 @@ while True:
         #3번 베이스먼트 찾기
         if time<m:
             continue
-        if p[m] == (0,0):
-            br,bc = find_basecamp(m)
-            arr[br][bc] = -1
-            p[m] = (br,bc)
-            continue
         if m in arrive:
             continue
-        p[m] = move(m)
+        if p[m] == (0,0):
+            br,bc = find_basecamp(m)
+            found_basement.add(m)
+            #arr[br][bc] = -1
+            p[m] = (br,bc)
+            continue
+        else:
+            p[m] = move(m)
+    for m in range(1, M+1):
         pr, pc = p[m]
         #1,2번 편의점으로 이동
+        if m in found_basement:
+            arr[pr][pc] = -1  # 베이스먼트 도착
+            found_basement.remove(m)
         if p[m] == s[m]:
             arr[pr][pc] = -1  # 편의점 도착
             arrive.add(m)
             continue
 
-    '''
-    for m in range(1,M+1):
-        pr,pc = p[m]
-        if p[m] == s[m]:
-            arr[pr][pc] = -1 #편의점 도착
-            arrive.add(m)
-        if arr[pr][pc] == 1: #베이스먼트 도착
-            arr[pr][pc] = -1
-    '''
+ 
 print(time)
