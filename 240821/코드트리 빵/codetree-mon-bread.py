@@ -114,30 +114,39 @@ while True:
         break
     time += 1
     for m in range(1, M+1):
-
-        #3번 베이스먼트 찾기
         if time<m:
             continue
         if m in arrive:
             continue
-        if p[m] == (0,0):
-            br,bc = find_basecamp(m)
-            found_basement.add(m)
-            #arr[br][bc] = -1
-            p[m] = (br,bc)
-            continue
-        else:
+        #1이동
+        if p[m] != (0,0):
             p[m] = move(m)
-    for m in range(1, M+1):
+
+    for m in range(1, M + 1):
+        if time<m:
+            continue
+        # 1,2번 편의점으로 이동
         pr, pc = p[m]
-        #1,2번 편의점으로 이동
-        if m in found_basement:
-            arr[pr][pc] = -1  # 베이스먼트 도착
-            found_basement.remove(m)
         if p[m] == s[m]:
             arr[pr][pc] = -1  # 편의점 도착
             arrive.add(m)
-            continue
 
- 
+    #3베이스먼트
+    for m in range(1, M + 1):
+        if time == m:
+            br, bc = find_basecamp(m)
+            found_basement.add(m)
+            arr[br][bc] = -1
+            p[m] = (br, bc)
+
+
+
+    for m in range(1, M+1):
+
+        if m in found_basement:
+            arr[pr][pc] = -1  # 베이스먼트 도착
+            found_basement.remove(m)
+
+
+
 print(time)
