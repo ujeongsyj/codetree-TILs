@@ -155,26 +155,45 @@ else:
                 dir = d
                 stone_war = stone
                 m_watch = watch
-        #3. 전사 이동
+        #3. 전사 이동 상하좌우
         for i in range(len(war)):
             if war[i] not in stone_war:
-                for k in range(2):
-                    r, c = war[i]
-                    cur_dist = cal_distance(r,c,sr,sc)
-                    for d in range(4):
-                        nr,nc = r+dy[d],c+dx[d]
-                        if 0<=nr<N and 0<=nc<N and m_watch[nr][nc]==0:
-                            new_dist = cal_distance(nr,nc,sr,sc)
-                            if new_dist < cur_dist:
-                                war[i] = (nr,nc)
-                                dist[i] += 1
-                                break
-
-        #4.전사공격
-        for i in range(len(war)-1,-1,-1):
-            if war[i] not in stone_war and war[i] == (sr,sc):
+                r, c = war[i]
+                cur_dist = cal_distance(r,c,sr,sc)
+                for d in range(4):
+                    nr,nc = r+dy[d],c+dx[d]
+                    if 0<=nr<N and 0<=nc<N and m_watch[nr][nc]==0:
+                        new_dist = cal_distance(nr,nc,sr,sc)
+                        if new_dist < cur_dist:
+                            war[i] = (nr,nc)
+                            dist[i] += 1
+                            break
+        #전사공격
+        for i in range(len(war) - 1, -1, -1):
+            if war[i] not in stone_war and war[i] == (sr, sc):
                 attack_cnt += 1
                 war.pop(i)
+
+        #좌우상하
+        for i in range(len(war)):
+            if war[i] not in stone_war:
+                r, c = war[i]
+                cur_dist = cal_distance(r, c, sr, sc)
+                for ddy,ddx in [(0,-1),(0,1),(-1,0),(1,0)]:
+                    nr, nc = r + ddy, c + ddx
+                    if 0 <= nr < N and 0 <= nc < N and m_watch[nr][nc] == 0:
+                        new_dist = cal_distance(nr, nc, sr, sc)
+                        if new_dist < cur_dist:
+                            war[i] = (nr, nc)
+                            dist[i] += 1
+                            break
+        # 전사공격
+        for i in range(len(war) - 1, -1, -1):
+            if war[i] not in stone_war and war[i] == (sr, sc):
+                attack_cnt += 1
+                war.pop(i)
+
+
         #출력
         total_war_dist = sum(dist)
         stone_cnt = len(stone_war)
