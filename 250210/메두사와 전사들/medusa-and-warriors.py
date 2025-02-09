@@ -53,9 +53,10 @@ def cnt_war(dir,sr,sc):
     visited[sr][sc] = 1
     while q:
         r,c = q.popleft()
-        if (r, c) in war:
-            cnt += 1
-            stone.append((r, c))
+        for w in war: #중복 둘다 포함
+            if (r, c) == w:
+                cnt += 1
+                stone.append(w)
         for y,x in [(dy[dir],dx[dir]),l_dir,r_dir]:
             nr,nc  = r+y, c+x
             if 0<=nr<N and 0<=nc<N and visited[nr][nc] == 0:
@@ -103,9 +104,10 @@ def cnt_war(dir,sr,sc):
             for y,x in dir_lst:
                 nr,nc = r+y, c+x
                 if 0 <= nr < N and 0 <= nc < N and new_visited[nr][nc] == 0:
-                    if (nr, nc) in stone:
-                        stone.remove((nr, nc))
-                        cnt -= 1
+                    for st in stone: # stone안에 nr,nc 여러개일때 다 제거
+                        if (nr, nc) ==  st:
+                            stone.remove(st)
+                            cnt -= 1
                     new_visited[nr][nc] = 1
                     dq.append((nr, nc))
         for i in range(N):
@@ -138,7 +140,7 @@ else:
         for wr,wc in war:
             if (sr,sc) == (wr,wc):
                 war.remove((wr,wc))
-        #마지막일 때
+        #마지막일때
         if i == len(path)-1:
             print(0)
             break
@@ -168,13 +170,13 @@ else:
                             war[i] = (nr,nc)
                             dist[i] += 1
                             break
-        #전사공격
+        #4.전사공격
         for i in range(len(war) - 1, -1, -1):
             if war[i] not in stone_war and war[i] == (sr, sc):
                 attack_cnt += 1
                 war.pop(i)
 
-        #좌우상하
+        #3. 좌우상하
         for i in range(len(war)):
             if war[i] not in stone_war:
                 r, c = war[i]
@@ -187,7 +189,7 @@ else:
                             war[i] = (nr, nc)
                             dist[i] += 1
                             break
-        # 전사공격
+        #4. 전사공격
         for i in range(len(war) - 1, -1, -1):
             if war[i] not in stone_war and war[i] == (sr, sc):
                 attack_cnt += 1
